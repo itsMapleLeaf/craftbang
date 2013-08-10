@@ -19,6 +19,10 @@ if download then
 	shell.run(instPath)
 	fs.delete(instPath)
 
+	for _,v in pairs(rs.getSides()) do
+		disk.eject(v)
+	end
+
 	write "Restart now? [Y/n]"
 	local input = read():lower():sub(1,1)
 	if input == 'n' then
