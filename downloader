@@ -4,7 +4,7 @@ if not http then
 	return
 end
 
-local url = "https://bitbucket.org/Kingdaro/craftbang-de/raw/c3ba09b383016f982397b5244a2be71dde328d75/installer"
+local url = "https://github.com/Kingdaro/CraftBang/raw/master/installer"
 print "Downloading installer"
 
 local download = http.get(url)

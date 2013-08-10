@@ -1,5 +1,5 @@
 local errors = false
-local url = "https://bitbucket.org/Kingdaro/craftbang-de/raw/6b6578a572c9b0831ac9fd56c79eab2b9a43e2e1/craftbang/"
+local url = "https://raw.github.com/Kingdaro/CraftBang/master/craftbang/"
 local filelist = {
 	'desktop';
 	'dialog';
