@@ -1,0 +1,166 @@
+local panel = arealib.new(1, 1, craftbang.colors.panel)
+	:bottom(1, true)
+	:sizeRight(1, true)
+
+panel.tasks = {}
+panel.activeTask = nil
+panel.dragFocus = nil
+
+function panel:addTask(program, name, silent)
+	local w,h = term.getSize()
+	local task = arealib.new(1, 1)
+	local buffer = redirect.createRedirectBuffer(w, h - 1)
+
+	local function run()
+		shell.run(program)
+		task.name = "[X] " .. task.name
+	end
+
+	task.name = name or fs.getName(program):match('%S+')
+	task.buffer = buffer
+	task.run = coroutine.create(run)
+
+	function task:resume(...)
+		if self.run then
+			term.redirect(self.buffer)
+			coroutine.resume(self.run, ...)
+			term.restore()
+		end
+	end
+
+	table.insert(self.tasks, task)
+	self:resizeTasks()
+
+	if not silent then
+		self:setActive(task)
+	end
+
+	task:resume()
+end
+
+function panel:killTask(task)
+	for i=#self.tasks, 1, -1 do
+		local v = self.tasks[i]
+		if task == v then
+			if self.activeTask == v then
+				self.activeTask = self.tasks[i - 1] or self.tasks[i + 1]
+			end
+			table.remove(self.tasks, i)
+			v.run = nil
+			break
+		end
+	end
+	self:resizeTasks()
+end
+
+function panel:setActive(task)
+	self.activeTask = task
+	self:resizeTasks()
+end
+
+function panel:resizeTasks()
+	for i=1, #self.tasks do
+		local v = self.tasks[i]
+		v.x = self.width / #self.tasks * (i - 1) + 1
+		v.y = self.y
+		v.width = math.ceil(self.width / #self.tasks)
+	end
+end
+
+function panel:events(ev, ...)
+	if #self.tasks < 1 then return end
+
+	if ev == 'mouse_click'
+	or ev == 'mouse_drag'
+	or ev == 'mouse_scroll' then
+		local _, _, y = ...
+		if y == self.y then
+			return
+		end
+	end
+
+	local inputEvents = {
+		key = true;
+		char = true;
+		mouse_click = true;
+		mouse_drag = true;
+		mouse_scroll = true;
+		monitor_touch = true;
+		terminate = true;
+	}
+
+	for i=1, #self.tasks do
+		local v = self.tasks[i]
+		if v == self.activeTask or not inputEvents[ev] then
+			v:resume(ev, ...)
+		end
+	end
+
+	for i=#self.tasks, 1, -1 do
+		local v = self.tasks[i]
+		if v.run and coroutine.status(v.run) == 'dead' then
+			--self:killTask(v)
+		end
+	end
+end
+
+function panel:clicked(button, x, y)
+	for i=1, #self.tasks do
+		local v = self.tasks[i]
+		if v:contains(x, y) then
+			if button == 1 then
+				if self.activeTask ~= v then
+					self.activeTask = v
+				else
+					self.activeTask = nil
+				end
+				self.dragFocus = { task = v, index = i }
+			else
+				self:killTask(v)
+			end
+			break
+		end
+	end
+end
+
+function panel:dragged(button, x, y)
+	for i=1, #self.tasks do
+		local v = self.tasks[i]
+		if v:contains(x, y) and v ~= self.dragFocus.task then
+			table.insert(self.tasks, i, table.remove(self.tasks, self.dragFocus.index))
+			self.dragFocus.index = i
+			panel:resizeTasks()
+			break
+		end
+	end
+end
+
+function panel:draw()
+	for i=#self.tasks, 1, -1 do
+		local v = self.tasks[i]
+		if self.activeTask == v then
+			v.color = craftbang.desktop.color
+			term.setTextColor(self.color)
+		else
+			v.color = self.color
+			term.setTextColor(craftbang.desktop.color)
+		end
+		v:fill()
+
+		local text = v.name
+		if #text > v.width - 2 then
+			text = text:sub(1, v.width - 4) .. '..'
+		end
+		craftbang.output(text, v.x + v.width/2 - #text/2, v.y)
+	end
+
+	if self.activeTask then
+		local buffer = self.activeTask.buffer
+		buffer.blit()
+		term.setTextColor(buffer.textColor)
+		term.setCursorPos(buffer.getCursorPos())
+		term.setCursorBlink(buffer.cursorBlink)
+	end
+end
+
+return panel
