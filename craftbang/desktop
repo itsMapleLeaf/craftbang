@@ -163,14 +163,17 @@ function desktop:clicked(button, x, y)
 			"";
 			"Restart";
 			"Shutdown";
+			"Exit CraftBang";
 		},
 		function(choice)
 			if choice == 1 then
 				craftbang.dialog:textInput('Run...', nil,
-				function (path)
-					local program = shell.resolveProgram(path)
+				function (input)
+					local program = shell.resolveProgram(input:match('%S+'))
 					if program then
-						craftbang.panel:addTask(program)
+						craftbang.panel:addTask(input)
+					else
+						craftbang.dialog:notice("Program does not exist!")
 					end
 				end)
 			elseif choice == 2 then
@@ -183,6 +186,8 @@ function desktop:clicked(button, x, y)
 				os.reboot()
 			elseif choice == 7 then
 				os.shutdown()
+			elseif choice == 8 then
+				craftbang.running = false
 			end
 		end)
 	end

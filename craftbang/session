@@ -8,7 +8,9 @@ craftbang = {
 		tile = colors.lightGray;
 		tileText = colors.gray;
 		tileFavorite = colors.lightBlue;
-	}
+	};
+	screen = {};
+	running = true;
 }
 
 function craftbang.background(color)
@@ -52,6 +54,8 @@ arealib.add(craftbang.desktop)
 arealib.add(craftbang.panel)
 
 local function main()
+	craftbang.screen.width, craftbang.screen.height = term.getSize()
+
 	local redraw = true
 	local function draw()
 		if redraw then
@@ -86,7 +90,9 @@ local function main()
 
 	local updateTimer = os.startTimer(1)
 
-	while true do
+	while craftbang.running do
+		craftbang.screen.width, craftbang.screen.height = term.getSize()
+
 		draw()
 		
 		local ev = {os.pullEventRaw()}

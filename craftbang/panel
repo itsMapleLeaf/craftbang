@@ -9,7 +9,9 @@ panel.dragFocus = nil
 function panel:addTask(program, name, silent)
 	local w,h = term.getSize()
 	local task = arealib.new(1, 1)
-	local buffer = redirect.createRedirectBuffer(w, h - 1)
+	local buffer = redirect.createRedirectBuffer(
+		craftbang.screen.width, 
+		craftbang.screen.height - 1)
 
 	local function run()
 		shell.run(program)

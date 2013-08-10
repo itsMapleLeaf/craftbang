@@ -1,15 +1,18 @@
+--[[
 if not craftbang then
 	print "Must be run under CraftBang desktop environment."
 	return
 end
+]]
 
 local function setColors()
-	term.setBackgroundColor(craftbang.colors.background)
-	term.setTextColor(craftbang.colors.panel)
+	term.setBackgroundColor(colors.gray)
+	term.setTextColor(colors.lightGray)
 end
 
-craftbang.background()
 setColors()
+term.clear()
+term.setCursorPos(1,1)
 
 while true do
 	setColors()
@@ -23,15 +26,18 @@ while true do
 	if input == 'exit' then
 		break
 	else
-		local path = shell.resolveProgram(input)
-		if fs.exists(path) and not fs.isDir(path) then
-			shell.run(path)
+		local args = {}
+		for v in input:gmatch('%S+') do
+			table.insert(args, v)
+		end
+
+		local program = shell.resolveProgram(args[1])
+		if program then
+			shell.run(unpack(args))
+		elseif fs.isDir(args[1]) then
+			print(args[1] .. " is a directory.")
 		else
-			if fs.isDir(path) then
-				print(path .. " is a directory.")
-			else
-				print(path .. " does not exist.")
-			end
+			print(args[1] .. " does not exist.")
 		end
 	end
 end

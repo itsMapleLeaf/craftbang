@@ -53,8 +53,8 @@ end
 
 -- corner positioning
 function area:topLeft(x, y)
-	self.x = x
-	self.y = y
+	self.x = math.floor(x)
+	self.y = math.floor(y)
 	return self
 end
 
@@ -116,14 +116,14 @@ end
 function area:sizeLeft(x)
 	local right = self.x + self.width - 1
 	self:left(x)
-	self.width = right - self.x + 1
+	self.width = math.floor(right - self.x + 1)
 	return self
 end
 
 function area:sizeTop(y)
 	local bottom = self.y + self.height - 1
 	self:top(y)
-	self.height = bottom - self.x + 1
+	self.height = math.floor(bottom - self.x + 1)
 	return self
 end
 
@@ -132,7 +132,7 @@ function area:sizeRight(x, anchored)
 		local w,h = target.getSize()
 		x = w - x + 1
 	end
-	self.width = x - self.x + 1
+	self.width = math.floor(x - self.x + 1)
 	return self
 end
 
@@ -141,7 +141,7 @@ function area:sizeBottom(y, anchored)
 		local w,h = target.getSize()
 		y = h - y + 1
 	end
-	self.height = y - self.y + 1
+	self.height = math.floor(y - self.y + 1)
 	return self
 end
 

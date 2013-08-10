@@ -24,10 +24,9 @@ function dialog:textInput(title, limit, callback)
 	self:sizeLeft(5):sizeRight(5, true):center()
 
 	local input = ''
-	local _, _, _, bottom = self:bounds()
 
 	local cancelText = " Cancel "
-	local cancel = arealib.new(#cancelText, 1, craftbang.colors.background):midBottom(nil, bottom)
+	local cancel = arealib.new(#cancelText, 1, craftbang.colors.background)
 
 	function self:events(ev, p1, p2, p3)
 		if ev == 'char' then
@@ -50,11 +49,8 @@ function dialog:textInput(title, limit, callback)
 	end
 
 	function self:draw()
-		term.setCursorBlink(true)
-
 		border:draw()
 		self:fill()
-		cancel:fill()
 
 		craftbang.output(title,
 			self.x + self.width/2 - #title/2,
@@ -65,7 +61,10 @@ function dialog:textInput(title, limit, callback)
 			self.x + self.width/2 - #input/2,
 			self.y + 3)
 		
-		craftbang.output(cancelText, cancel.x, cancel.y, colors.lightGray, colors.gray)
+		cancel:midBottom(25, self:bounds('bottom')):fill()
+		craftbang.output(cancelText, cancel.x, cancel.y, colors.lightGray)
+
+		term.setCursorBlink(true)
 	end
 
 	dialog.active = true

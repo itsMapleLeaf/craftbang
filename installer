@@ -1,9 +1,3 @@
-if not http then
-	print "It doesn't seem like you have http enabled."
-	print "Enable it first, restart minecraft, then run this file again."
-	return
-end
-
 local errors = false
 local url = "https://bitbucket.org/Kingdaro/craftbang-de/raw/6b6578a572c9b0831ac9fd56c79eab2b9a43e2e1/craftbang/"
 local filelist = {

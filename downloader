@@ -1,0 +1,19 @@
+if not http then
+	print "It doesn't seem like you have http enabled."
+	print "Enable it first, restart minecraft, then run the installer again."
+	return
+end
+
+local url = "https://bitbucket.org/Kingdaro/craftbang-de/raw/c3ba09b383016f982397b5244a2be71dde328d75/installer"
+print "Downloading installer"
+
+local download = http.get(url)
+if download then
+	local file = fs.open('installer', 'w')
+	file.write(download.readAll())
+	file.close()
+	download.close()
+	shell.run("installer")
+else
+	print "Couldn't get installer"
+end
