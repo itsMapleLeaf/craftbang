@@ -16,6 +16,14 @@ local filelist = {
 	'lib/redirect';
 }
 
+local startupContent = [[
+if shell.getRunningProgram() == "craftbang/session" then
+	print "CraftBang session is already running."
+	return
+end
+shell.run("craftbang/session")
+]]
+
 if fs.exists('/craftbang') then
 	fs.delete('/craftbang')
 end
@@ -75,11 +83,11 @@ getInput(
 	function()
 		print''
 		if fs.exists('startup') then
-			if not fs.exists('/autorun') then
-				fs.makeDir('/autorun')
+			if not fs.exists('autorun') then
+				fs.makeDir('autorun')
 			end
-			if fs.exists('/autorun/startup') then
-				print "/autorun/startup already exists"
+			if fs.exists('autorun/startup') then
+				print "autorun/startup already exists"
 			else
 				fs.move('startup', 'autorun/startup')
 				print "Startup moved to /autorun."
@@ -87,7 +95,8 @@ getInput(
 		end
 
 		local startup = fs.open('startup', 'w')
-		startup.writeLine[[shell.run("craftbang/session")]]
+		startup.write(startupContent)
+		startup.close()
 		print "CraftBang will now run on startup."
 		saidYes = true
 	end,
