@@ -237,8 +237,10 @@ function desktop:key(key)
 			editShortcutDialog(self, selected.x, selected.y, selected)
 		end
 	end
-	selected.shortcut.x = selected.x
-	selected.shortcut.y = selected.y
+	if selected then
+		selected.shortcut.x = selected.x
+		selected.shortcut.y = selected.y
+	end
 end
 
 function desktop:scrolled(dir)
