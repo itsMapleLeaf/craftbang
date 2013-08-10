@@ -10,15 +10,6 @@ local filelist = {
 	'lib/redirect';
 }
 
-local startupContent = [[
--- CraftBang Startup
-if shell.getRunningProgram() == "craftbang/session" then
-	print "CraftBang session is already running."
-	return
-end
-shell.run("craftbang/session")
-]]
-
 if fs.exists('/craftbang') then
 	fs.delete('/craftbang')
 end
@@ -66,20 +57,16 @@ local function getInput(onYes, onNo)
 	end
 end
 
+local startupContent = [[
+shell.run("craftbang/session")
+]]
+
 print''
 write "Run CraftBang on startup? "
 if fs.exists('startup') then
-	local file = fs.open('startup', 'r')
-	local firstLine = file.readLine()
-	file.close()
-	
-	if not firstLine:match("CraftBang Startup") then
-		term.setTextColor(colors.gray)
-		print "\n( Your current startup file will be moved to /autorun, and will be automatically started when CraftBang runs. )"
-		term.setTextColor(colors.white)
-	else
-		fs.delete('startup')
-	end
+	term.setTextColor(colors.gray)
+	print "\n( Your current startup file will be renamed to startup-old"
+	term.setTextColor(colors.white)
 end
 write "[y/n] "
 
@@ -87,22 +74,18 @@ local saidYes = false
 print''
 getInput(
 	function()
-		if not fs.exists('autorun') then
-			fs.makeDir('autorun')
-		end
+		saidYes = true
 		if fs.exists('startup') then
-			if fs.exists('autorun/startup') then
-				fs.delete('autorun/startup')
+			if fs.exists('startup-old') then
+				fs.delete('startup-old')
 			end
-			fs.move('startup', 'autorun/startup')
-			print "Startup moved to /autorun."
+			fs.move('startup','startup-old')
 		end
 
 		local startup = fs.open('startup', 'w')
 		startup.write(startupContent)
 		startup.close()
 		print "CraftBang will now run on startup."
-		saidYes = true
 	end,
 	function()
 		print "In that case, run craftbang/session to start CraftBang."
