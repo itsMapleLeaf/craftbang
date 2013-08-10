@@ -11,6 +11,7 @@ local filelist = {
 }
 
 local startupContent = [[
+-- CraftBang Startup
 if shell.getRunningProgram() == "craftbang/session" then
 	print "CraftBang session is already running."
 	return
@@ -66,26 +67,35 @@ local function getInput(onYes, onNo)
 end
 
 print''
-print "Run CraftBang on startup?"
-term.setTextColor(colors.gray)
-print "( Your current startup file will be moved to /autorun, and will be automatically started when CraftBang runs. )"
-term.setTextColor(colors.white)
+write "Run CraftBang on startup? "
+if fs.exists('startup') then
+	local file = fs.open('startup', 'r')
+	local firstLine = file.readLine()
+	file.close()
+	
+	if not firstLine:match("CraftBang Startup") then
+		term.setTextColor(colors.gray)
+		print "\n( Your current startup file will be moved to /autorun, and will be automatically started when CraftBang runs. )"
+		term.setTextColor(colors.white)
+	else
+		fs.delete('startup')
+	end
+end
 write "[y/n] "
 
 local saidYes = false
+print''
 getInput(
 	function()
-		print''
+		if not fs.exists('autorun') then
+			fs.makeDir('autorun')
+		end
 		if fs.exists('startup') then
-			if not fs.exists('autorun') then
-				fs.makeDir('autorun')
-			end
 			if fs.exists('autorun/startup') then
-				print "autorun/startup already exists"
-			else
-				fs.move('startup', 'autorun/startup')
-				print "Startup moved to /autorun."
+				fs.delete('autorun/startup')
 			end
+			fs.move('startup', 'autorun/startup')
+			print "Startup moved to /autorun."
 		end
 
 		local startup = fs.open('startup', 'w')
@@ -95,12 +105,17 @@ getInput(
 		saidYes = true
 	end,
 	function()
-		print''
 		print "In that case, run craftbang/session to start CraftBang."
 	end
 )
 
 write "Restart now? [y/n] "
+
+local function eject()
+	for _, v in pairs(rs.getSides()) do
+		disk.eject(v)
+	end
+end
 
 getInput(
 	function()
@@ -108,13 +123,13 @@ getInput(
 			print "\nSee you in CraftBang!"
 			sleep(1)
 		end
-		for _, v in pairs(rs.getSides()) do
-			disk.eject(v)
-		end
+		eject()
 		os.reboot()
 	end,
 	function()
 		print "\nI'll let you get back to your shell then."
 		print "Do whatever you need to do."
+		eject()
 	end
 )
+
