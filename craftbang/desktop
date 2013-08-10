@@ -169,7 +169,8 @@ function desktop:clicked(button, x, y)
 				craftbang.dialog:textInput('Run...', nil,
 				function (path)
 					local program = shell.resolveProgram(path)
-					if fs.exists(program) then
+					if program then
+						craftbang.panel:addTask(program)
 					end
 				end)
 			elseif choice == 2 then
