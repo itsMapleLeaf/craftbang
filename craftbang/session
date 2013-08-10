@@ -111,6 +111,10 @@ local function main()
 
 	local updateTimer = os.startTimer(1)
 
+	local altClock = 0
+	local altPeriod = 0.75
+	local altTimer
+
 	while craftbang.running do
 		craftbang.screen.width, craftbang.screen.height = term.getSize()
 
@@ -118,43 +122,65 @@ local function main()
 		
 		local ev = {os.pullEventRaw()}
 
-		if ev[1] == 'timer' and ev[2] == updateTimer then
-			updateTimer = os.startTimer(1)
-			craftbang.desktop:saveShortcuts()
+		if ev[1] == 'timer' then
+			if ev[2] == updateTimer then
+				updateTimer = os.startTimer(1)
+				craftbang.desktop:saveShortcuts()
+			elseif ev[2] == altTimer then
+				craftbang.dialog:close()
+			end
 		end
 
-		craftbang.panel:events(unpack(ev))
-		if not craftbang.panel.activeTask then
-			if ev[1] == 'terminate' then
-				break
+		if ev[1] == 'key' then
+			if ev[2] == keys.leftAlt or ev[2] == keys.rightAlt then
+				if os.clock() - altClock < altPeriod then
+					craftbang.panel:events(unpack(ev))
+				end
+				altClock = os.clock()
 			end
+		end
 
+		if ev[1] == 'key' and os.clock() - altClock < altPeriod then
+			craftbang.panel:altKey(ev[2])
+			altClock = os.clock()
+
+			craftbang.dialog:notice("Alt Mode")
+			altTimer = os.startTimer(altPeriod)
+		else
+			craftbang.panel:events(unpack(ev))
 			if craftbang.dialog.active then
 				craftbang.dialog:events(unpack(ev))
-			else
-				if ev[1] == 'mouse_click' then
-					arealib.clicked(ev[2], ev[3], ev[4])
-				elseif ev[1] == 'mouse_drag' then
-					arealib.dragged(ev[2], ev[3], ev[4])
-				elseif ev[1] == 'mouse_scroll' then
-					arealib.scrolled(ev[2], ev[3], ev[4])
-				elseif ev[1] == 'key' then
-					craftbang.desktop:key(ev[2])
-					craftbang.panel:key(ev[2])
-				end
 			end
-		else
-			local panel = craftbang.panel
-			if ev[1] == 'mouse_click' then
-				if panel:contains(ev[3], ev[4]) then
-					panel:clicked(ev[2], ev[3], ev[4])
+			if not craftbang.panel.activeTask then
+				if ev[1] == 'terminate' then
+					break
 				end
-			elseif ev[1] == 'mouse_drag' then
-				if panel:contains(ev[3], ev[4]) then
-					panel:dragged(ev[2], ev[3], ev[4])
+
+				if not craftbang.dialog.active then
+					if ev[1] == 'mouse_click' then
+						arealib.clicked(ev[2], ev[3], ev[4])
+					elseif ev[1] == 'mouse_drag' then
+						arealib.dragged(ev[2], ev[3], ev[4])
+					elseif ev[1] == 'mouse_scroll' then
+						arealib.scrolled(ev[2], ev[3], ev[4])
+					elseif ev[1] == 'key' then
+						craftbang.desktop:key(ev[2])
+						craftbang.panel:key(ev[2])
+					end
 				end
-			elseif ev[1] == 'key' then
-				panel:key(ev[2])
+			else
+				local panel = craftbang.panel
+				if ev[1] == 'mouse_click' then
+					if panel:contains(ev[3], ev[4]) then
+						panel:clicked(ev[2], ev[3], ev[4])
+					end
+				elseif ev[1] == 'mouse_drag' then
+					if panel:contains(ev[3], ev[4]) then
+						panel:dragged(ev[2], ev[3], ev[4])
+					end
+				elseif ev[1] == 'key' then
+					panel:key(ev[2])
+				end
 			end
 		end
 	end

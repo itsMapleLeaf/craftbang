@@ -170,10 +170,13 @@ function panel:dragged(button, x, y)
 end
 
 function panel:key(key)
-	local prev = keys.f5
-	local next = keys.f6
-	local toggle = keys.f7
-	local close = keys.f8
+end
+
+function panel:altKey(key)
+	local prev = keys.left
+	local next = keys.right
+	local toggle = key == keys.down and keys.down or keys.up
+	local close = keys.x
 
 	local tasks = self.tasks
 	if key == prev or key == next then
