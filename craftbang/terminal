@@ -26,18 +26,20 @@ while true do
 	if input == 'exit' then
 		break
 	else
-		local args = {}
-		for v in input:gmatch('%S+') do
-			table.insert(args, v)
-		end
+		if input then
+			local args = {}
+			for v in input:gmatch('%S+') do
+				table.insert(args, v)
+			end
 
-		local program = shell.resolveProgram(args[1])
-		if program then
-			shell.run(unpack(args))
-		elseif fs.isDir(args[1]) then
-			print(args[1] .. " is a directory.")
-		else
-			print(args[1] .. " does not exist.")
+			local program = shell.resolveProgram(args[1])
+			if program then
+				shell.run(unpack(args))
+			elseif fs.isDir(args[1]) then
+				print(args[1] .. " is a directory.")
+			else
+				print(args[1] .. " does not exist.")
+			end
 		end
 	end
 end

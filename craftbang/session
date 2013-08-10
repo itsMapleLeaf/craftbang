@@ -140,6 +140,7 @@ local function main()
 					arealib.scrolled(ev[2], ev[3], ev[4])
 				elseif ev[1] == 'key' then
 					craftbang.desktop:key(ev[2])
+					craftbang.panel:key(ev[2])
 				end
 			end
 		else
@@ -148,6 +149,12 @@ local function main()
 				if panel:contains(ev[3], ev[4]) then
 					panel:clicked(ev[2], ev[3], ev[4])
 				end
+			elseif ev[1] == 'mouse_drag' then
+				if panel:contains(ev[3], ev[4]) then
+					panel:dragged(ev[2], ev[3], ev[4])
+				end
+			elseif ev[1] == 'key' then
+				panel:key(ev[2])
 			end
 		end
 	end

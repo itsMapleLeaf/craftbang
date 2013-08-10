@@ -4,9 +4,15 @@ local panel = arealib.new(1, 1, craftbang.colors.panel)
 
 panel.tasks = {}
 panel.activeTask = nil
+panel.lastActive = nil
 panel.dragFocus = nil
 
 function panel:addTask(program, name, silent)
+	if not shell.resolveProgram(program:match("%S+")) then
+		craftbang.dialog:notice(program.." does not exist!")
+		return
+	end
+
 	local w,h = term.getSize()
 	local task = arealib.new(1, 1)
 	local buffer = redirect.createRedirectBuffer(
@@ -23,11 +29,36 @@ function panel:addTask(program, name, silent)
 	task.run = coroutine.create(run)
 
 	function task:resume(...)
+		local pe = os.pullEvent
+		function os.pullEvent(filter)
+			while true do
+				local ev = { coroutine.yield() }
+				if ev[1] == 'terminate' then
+					error("Terminated", 0)
+				else
+					if filter == nil or ev[1] == filter then
+						return unpack(ev)
+					end
+				end
+			end
+		end
+
+		if coroutine.status(self.run) == 'dead' then
+			return
+		end
 		if self.run then
-			term.redirect(self.buffer)
-			coroutine.resume(self.run, ...)
+			term.redirect(buffer)
+
+			local ok, err = coroutine.resume(self.run, ...)
+			if not ok then
+				term.setTextColor(colors.red)
+				term.setBackgroundColor(colors.black)
+				print(err)
+			end
+
 			term.restore()
 		end
+		os.pullEvent = pe
 	end
 
 	table.insert(self.tasks, task)
@@ -131,8 +162,49 @@ function panel:dragged(button, x, y)
 		if v:contains(x, y) and v ~= self.dragFocus.task then
 			table.insert(self.tasks, i, table.remove(self.tasks, self.dragFocus.index))
 			self.dragFocus.index = i
+			self.activeTask = self.dragFocus.task
 			panel:resizeTasks()
 			break
+		end
+	end
+end
+
+function panel:key(key)
+	local prev = keys.f5
+	local next = keys.f6
+	local toggle = keys.f7
+	local close = keys.f8
+
+	local tasks = self.tasks
+	if key == prev or key == next then
+		if self.activeTask then
+			local index
+			for i=1, #tasks do
+				if tasks[i] == self.activeTask then
+					index = i
+					break
+				end
+			end
+			if key == prev then
+				self:setActive(tasks[index > 1 and index - 1 or #tasks])
+			elseif key == next then
+				self:setActive(tasks[index < #tasks and index + 1 or 1])
+			end
+		end
+	elseif key == toggle then
+		if self.activeTask then
+			self.lastActive = self.activeTask
+			self:setActive(nil)
+		else
+			if self.lastActive then
+				self:setActive(self.lastActive)
+			else
+				self:setActive(tasks[1])
+			end
+		end
+	elseif key == close then
+		if self.activeTask then
+			self:killTask(self.activeTask)
 		end
 	end
 end

@@ -37,6 +37,9 @@ local redirectBufferBase = {
       
     setCursorPos=
       function(buffer,x,y)
+        if x == nil and y == nil then
+          error("Expected number, number", 2)
+        end
         buffer.curX=math.floor(x)
         buffer.curY=math.floor(y)
         if buffer.isActive and buffer.cursorBlink then
@@ -52,6 +55,9 @@ local redirectBufferBase = {
       
     scroll=
       function(buffer,offset)
+        if offset == nil then
+          error("Expected number", 2)
+        end
         for j=1,offset do
           local temp=table.remove(buffer,1)
           table.insert(buffer,temp)
@@ -107,6 +113,9 @@ local redirectBufferBase = {
       
     setCursorBlink=
       function(buffer,onoff)
+        if onoff == nil then
+          error("Expected boolean", 2)
+        end
         buffer.cursorBlink=onoff
         if buffer.isActive then
           term.native.setCursorBlink(onoff)
@@ -124,6 +133,9 @@ local redirectBufferBase = {
       
     setTextColor=
       function(buffer,color)
+        if color == nil then
+          error("Expected number", 2)
+        end
         buffer.textColor=color
         if buffer.isActive then
           if term.native.isColor() or color==colors.black or color==colors.white then
@@ -134,6 +146,9 @@ local redirectBufferBase = {
       
     setTextColour=
       function(buffer,color)
+        if color == nil then
+          error("Expected number", 2)
+        end
         buffer.textColor=color
         if buffer.isActive then
           if term.native.isColor() or color==colors.black or color==colors.white then
@@ -144,6 +159,9 @@ local redirectBufferBase = {
       
     setBackgroundColor=
       function(buffer,color)
+        if color == nil then
+          error("Expected number", 2)
+        end
         buffer.backgroundColor=color
         if buffer.isActive then
           if term.native.isColor() or color==colors.black or color==colors.white then
@@ -154,6 +172,9 @@ local redirectBufferBase = {
       
     setBackgroundColour=
       function(buffer,color)
+        if color == nil then
+          error("Expected number", 2)
+        end
         buffer.backgroundColor=color
         if buffer.isActive then
           if term.native.isColor() or color==colors.black or color==colors.white then
@@ -164,6 +185,9 @@ local redirectBufferBase = {
     
     resize=
       function(buffer,width,height)
+        if width == nil and height == nil then
+          error("Expected number, number", 2)
+        end
         if buffer.width~=width or buffer.height~=height then
           local fg, bg=buffer.textColor, buffer.backgroundColor
           if width>buffer.width then

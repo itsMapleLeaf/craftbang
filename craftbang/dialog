@@ -35,10 +35,11 @@ function dialog:textInput(title, limit, callback)
 		elseif ev == 'key' then
 			if p1 == keys.backspace then
 				input = input:sub(1, -2)
-			end
-			if p1 == keys.enter then
+			elseif p1 == keys.enter then
 				self:close()
 				callback(input)
+			elseif p1 == keys.leftCtrl then
+				self:close()
 			end
 		elseif ev == 'mouse_click' then
 			if cancel:contains(p2, p3) then
@@ -95,10 +96,15 @@ function dialog:menu(x, y, options, callback)
 	areas = {}
 
 	for i=1, #options do
-		local area = arealib.new(self.width, 1, self.color):topLeft(self.x, self.y + i)
-		area.name = options[i]
-		table.insert(areas, area)
+		if options[i] ~= '' then
+			local area = arealib.new(self.width, 1, self.color)
+			area:topLeft(self.x, self.y + i)
+			area.name = options[i]
+			table.insert(areas, area)
+		end
 	end
+
+	local selection
 
 	function self:events(ev, p1, p2, p3)
 		if ev == 'mouse_click' then
@@ -110,6 +116,25 @@ function dialog:menu(x, y, options, callback)
 					break
 				end
 			end
+		elseif ev == 'key' then
+			local key = keys.getName(p1)
+			if selection then
+				if key == 'up' then
+					selection = selection > 1
+					and selection - 1
+					or #areas
+				elseif key == 'down' then
+					selection = selection < #areas
+					and selection + 1
+					or 1
+				elseif key == 'enter' then
+					--self:close()
+					callback(selection)
+				end
+			else
+				selection = key == 'down' and 1
+				or key == 'up' and #areas
+			end
 		end
 	end
 
@@ -119,7 +144,13 @@ function dialog:menu(x, y, options, callback)
 		for i=1, #areas do
 			local area = areas[i]
 			area:fill()
-			craftbang.output(area.name, area.x + 1, area.y, craftbang.colors.panelText)
+
+			term.setTextColor(craftbang.colors.panelText)
+			if selection == i then
+				craftbang.output('>' .. area.name, area.x, area.y)
+			else
+				craftbang.output(area.name, area.x + 1, area.y)
+			end
 		end
 	end
 
