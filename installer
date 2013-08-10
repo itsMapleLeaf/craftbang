@@ -47,8 +47,7 @@ local startupContent = [[
 shell.run("craftbang/session")
 ]]
 
-print''
-write "Run CraftBang on startup? "
+write "\nRun CraftBang on startup? "
 if fs.exists('startup') then
 	term.setTextColor(term.isColor() and colors.gray or colors.white)
 	print "\nYour current startup file will be renamed to startup-old."
