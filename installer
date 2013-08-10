@@ -1,22 +1,11 @@
-term.clear()
-term.setBackgroundColor(colors.gray)
-term.setTextColor(colors.lightGray)
-
-print [[Hi there!
-I won't insult your intelligence, and I'll assume that
-you want CraftBang downloaded.]]
-
 if not http then
-	print "It doesn't seem like you have http enabled, though."
+	print "It doesn't seem like you have http enabled."
 	print "Enable it first, restart minecraft, then run this file again."
 	return
 end
 
-print [[I'll just fetch the files then.
-Will be written to the /craftbang directory.]]
-
 local errors = false
-local url = "http://bitbucket.org/Kingdaro/craftbang-de/raw/6b6578a572c9b0831ac9fd56c79eab2b9a43e2e1/craftbang/"
+local url = "https://bitbucket.org/Kingdaro/craftbang-de/raw/6b6578a572c9b0831ac9fd56c79eab2b9a43e2e1/craftbang/"
 local filelist = {
 	'desktop';
 	'dialog';
@@ -38,10 +27,9 @@ for i=1, #filelist do
 	local fullurl = url .. filename
 	local localpath = '/craftbang/'..filename
 
-	print("Fetching "..filename..'...')
 	local download = http.get(fullurl)
 	if download then
-		print("Writing "..filename)
+		print("Writing "..localpath)
 		local file = fs.open(localpath, 'w')
 		file.write(download.readAll())
 		file.close()
@@ -51,6 +39,7 @@ for i=1, #filelist do
 	end
 end
 
+print''
 if errors then
 	print "Install wasn't completely successful, it seems."
 	fs.delete('craftbang')
@@ -74,21 +63,27 @@ local function getInput(onYes, onNo)
 	end
 end
 
-print [[Run CraftBang on startup?
-Your current startup file will be moved to /autorun,
-and will be automatically started when CraftBang runs.
-[y/n] ]]
+print''
+print "Run CraftBang on startup?"
+term.setTextColor(colors.gray)
+print "( Your current startup file will be moved to /autorun, and will be automatically started when CraftBang runs. )"
+term.setTextColor(colors.white)
+write "[y/n] "
 
 local saidYes = false
-
 getInput(
 	function()
+		print''
 		if fs.exists('startup') then
-			if not fs.exists('autorun') then
-				fs.makeDir('autorun')
+			if not fs.exists('/autorun') then
+				fs.makeDir('/autorun')
 			end
-			fs.move('startup', 'autorun/startup')
-			print "Startup moved to /autorun."
+			if fs.exists('/autorun/startup') then
+				print "/autorun/startup already exists"
+			else
+				fs.move('startup', 'autorun/startup')
+				print "Startup moved to /autorun."
+			end
 		end
 
 		local startup = fs.open('startup', 'w')
@@ -97,22 +92,26 @@ getInput(
 		saidYes = true
 	end,
 	function()
+		print''
 		print "In that case, run craftbang/session to start CraftBang."
 	end
 )
 
-print "Restart now? [y/n]"
+write "Restart now? [y/n] "
 
 getInput(
 	function()
 		if saidYes then
-			print "See you in CraftBang!"
+			print "\nSee you in CraftBang!"
 			sleep(1)
+		end
+		for _, v in pairs(rs.getSides()) do
+			disk.eject(v)
 		end
 		os.reboot()
 	end,
 	function()
-		print "Mmk, I'll let you get back to your shell then."
+		print "\nI'll let you get back to your shell then."
 		print "Do whatever you need to do."
 	end
 )
