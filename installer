@@ -1,5 +1,5 @@
-local errors = false
 local url = "https://raw.github.com/Kingdaro/CraftBang/master/craftbang/"
+local files = {}
 local filelist = {
 	'desktop';
 	'dialog';
@@ -10,12 +10,13 @@ local filelist = {
 	'lib/redirect';
 }
 
-if fs.exists('/craftbang') then
-	fs.delete('/craftbang')
+local function clear()
+	term.clear()
+	term.setCursorPos(1,1)
 end
-fs.makeDir('/craftbang')
-fs.makeDir('/craftbang/lib')
 
+clear()
+local errors = false
 for i=1, #filelist do
 	local filename = filelist[i]
 	local fullurl = url .. filename
@@ -23,52 +24,71 @@ for i=1, #filelist do
 
 	local download = http.get(fullurl)
 	if download then
-		print("Writing "..localpath)
-		local file = fs.open(localpath, 'w')
-		file.write(download.readAll())
-		file.close()
+		print("Fetching "..filename)
+		files[localpath] = download.readAll()
+		download.close()
 	else
 		print("Couldn't get "..filename)
-		errors = true
+		print "Installation failed."
+		return
+	end
+end
+sleep(1)
+
+local installed = false
+if fs.exists('/craftbang') then
+	clear()
+	installed = true
+
+	write "Overwrite current installation? [y/N] "
+	local input = read():lower():sub(1,1)
+	if input == 'y' then
+		fs.delete('/craftbang')
+	else
+		print "Will not write files."
+		return
 	end
 end
 
-print''
-if errors then
-	print "Install wasn't completely successful, it seems."
-	fs.delete('craftbang')
-	print "Changes have been rolled back."
-	return
-else
-	print "Installation went off without a hitch!"
+clear()
+fs.makeDir('/craftbang')
+fs.makeDir('/craftbang/lib')
+for path, content in pairs(files) do
+	print("Writing "..path)
+	local file = fs.open(path, 'w')
+	file.write(content)
+	file.close()
 end
+print "Installation complete!"
+sleep(1)
 
-local startupContent = [[
-shell.run("craftbang/session")
-]]
+if not installed then
+	clear()
+	local startupContent = [[
+	shell.run("craftbang/session")
+	]]
 
-write "\nRun CraftBang on startup? "
-if fs.exists('startup') then
-	term.setTextColor(term.isColor() and colors.gray or colors.white)
-	print "\nYour current startup file will be renamed to startup-old."
-	term.setTextColor(colors.white)
-end
-write "[y/N] "
-
-local input = read():lower():sub(1,1)
-
-if input == 'y' then
+	write "Run CraftBang on startup? "
 	if fs.exists('startup') then
-		if fs.exists('startup-old') then
-			fs.delete('startup-old')
-		end
-		fs.move('startup','startup-old')
+		print "\nYour current startup file will be renamed to startup-old."
 	end
+	write "[y/N] "
 
-	local startup = fs.open('startup', 'w')
-	startup.write(startupContent)
-	startup.close()
-	print "CraftBang will now run on startup."
-else
-	print "In that case, run craftbang/session to start CraftBang."
+	local input = read():lower():sub(1,1)
+
+	if input == 'y' then
+		if fs.exists('startup') then
+			if fs.exists('startup-old') then
+				fs.delete('startup-old')
+			end
+			fs.move('startup','startup-old')
+		end
+
+		local startup = fs.open('startup', 'w')
+		startup.write(startupContent)
+		startup.close()
+		print "CraftBang will now run on startup."
+	else
+		print "In that case, run craftbang/session to start CraftBang."
+	end
 end
