@@ -6,8 +6,13 @@ end
 ]]
 
 local function setColors()
-	term.setBackgroundColor(colors.gray)
-	term.setTextColor(colors.lightGray)
+	if term.isColor() then
+		term.setBackgroundColor(colors.gray)
+		term.setTextColor(colors.lightGray)
+	else
+		term.setBackgroundColor(colors.black)
+		term.setTextColor(colors.white)
+	end
 end
 
 setColors()
