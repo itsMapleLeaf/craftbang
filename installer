@@ -43,20 +43,6 @@ else
 	print "Installation went off without a hitch!"
 end
 
-local function getInput(onYes, onNo)
-	while true do
-		local input = read():lower():sub(1,1)
-		if input == 'y' then
-			onYes()
-			break
-		elseif input == 'n' then
-			onNo()
-			break
-		end
-		print "Invalid input."
-	end
-end
-
 local startupContent = [[
 shell.run("craftbang/session")
 ]]
@@ -64,55 +50,26 @@ shell.run("craftbang/session")
 print''
 write "Run CraftBang on startup? "
 if fs.exists('startup') then
-	term.setTextColor(colors.gray)
-	print "\n( Your current startup file will be renamed to startup-old"
+	term.setTextColor(term.isColor() and colors.gray or colors.white)
+	print "\nYour current startup file will be renamed to startup-old."
 	term.setTextColor(colors.white)
 end
-write "[y/n] "
+write "[y/N] "
 
-local saidYes = false
-print''
-getInput(
-	function()
-		saidYes = true
-		if fs.exists('startup') then
-			if fs.exists('startup-old') then
-				fs.delete('startup-old')
-			end
-			fs.move('startup','startup-old')
+local input = read():lower():sub(1,1)
+
+if input == 'y' then
+	if fs.exists('startup') then
+		if fs.exists('startup-old') then
+			fs.delete('startup-old')
 		end
-
-		local startup = fs.open('startup', 'w')
-		startup.write(startupContent)
-		startup.close()
-		print "CraftBang will now run on startup."
-	end,
-	function()
-		print "In that case, run craftbang/session to start CraftBang."
+		fs.move('startup','startup-old')
 	end
-)
 
-write "Restart now? [y/n] "
-
-local function eject()
-	for _, v in pairs(rs.getSides()) do
-		disk.eject(v)
-	end
+	local startup = fs.open('startup', 'w')
+	startup.write(startupContent)
+	startup.close()
+	print "CraftBang will now run on startup."
+else
+	print "In that case, run craftbang/session to start CraftBang."
 end
-
-getInput(
-	function()
-		if saidYes then
-			print "\nSee you in CraftBang!"
-			sleep(1)
-		end
-		eject()
-		os.reboot()
-	end,
-	function()
-		print "\nI'll let you get back to your shell then."
-		print "Do whatever you need to do."
-		eject()
-	end
-)
-

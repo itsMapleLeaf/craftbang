@@ -18,8 +18,17 @@ craftbang = {
 	}
 	or {
 		background = colors.black;
+
 		panel = colors.white;
+		panelText = colors.black;
+
 		icon = colors.white;
+
+		dialog = colors.white;
+		dialogBorder = colors.black;
+		dialogText = colors.black;
+		dialogButton = colors.black;
+		dialogButtonText = colors.white;
 	};
 	screen = {};
 	running = true;

@@ -5,16 +5,30 @@ if not http then
 end
 
 local url = "https://github.com/Kingdaro/CraftBang/raw/master/installer"
+local instPath = ".cbinstaller"
+
 print "Downloading installer"
 
 local download = http.get(url)
 if download then
-	local file = fs.open('installer', 'w')
+	local file = fs.open(instPath, 'w')
 	file.write(download.readAll())
 	file.close()
 	download.close()
-	shell.run("installer")
-	fs.delete("installer")
+
+	shell.run(instPath)
+	fs.delete(instPath)
+
+	write "Restart now? [Y/n]"
+	local input = read():lower():sub(1,1)
+	if input == 'y' then
+		textutils.slowWrite("Goodbye!")
+		sleep(1)
+		os.reboot()
+	else
+		print "I'll let you return to your shell then."
+		print "Do what you need to do."
+	end
 else
 	print "Couldn't get installer"
 end
