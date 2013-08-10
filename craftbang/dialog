@@ -1,11 +1,10 @@
-local dialog = arealib.new(1, 1, craftbang.colors.panel)
-dialog.active = false
+local dialog = arealib.new(1, 1, craftbang.colors.dialog)
+local border = arealib.new(1, 1, craftbang.colors.dialogBorder)
 
-local border = arealib.new(1, 1)
+dialog.active = false
 
 function border:draw()
 	local left, top, right, bottom = dialog:bounds()
-	self.color = craftbang.colors.background
 	self:topLeft(left - 1, top - 1)
 		:sizeBottomRight(right + 1, bottom + 1)
 		:fill()
@@ -26,7 +25,7 @@ function dialog:textInput(title, limit, callback)
 	local input = ''
 
 	local cancelText = " Cancel "
-	local cancel = arealib.new(#cancelText, 1, craftbang.colors.background)
+	local cancel = arealib.new(#cancelText, 1, craftbang.colors.dialogButton)
 
 	function self:events(ev, p1, p2, p3)
 		if ev == 'char' then
@@ -55,14 +54,16 @@ function dialog:textInput(title, limit, callback)
 		craftbang.output(title,
 			self.x + self.width/2 - #title/2,
 			self.y + 1,
-			colors.gray, colors.lightGray)
+			craftbang.colors.dialogText, self.color)
 
 		craftbang.output(input,
 			self.x + self.width/2 - #input/2,
 			self.y + 3)
 		
 		cancel:midBottom(25, self:bounds('bottom')):fill()
-		craftbang.output(cancelText, cancel.x, cancel.y, colors.lightGray)
+		craftbang.output(cancelText,
+			cancel.x, cancel.y,
+			craftbang.colors.dialogButtonText)
 
 		term.setCursorBlink(true)
 	end
@@ -118,7 +119,7 @@ function dialog:menu(x, y, options, callback)
 		for i=1, #areas do
 			local area = areas[i]
 			area:fill()
-			craftbang.output(area.name, area.x + 1, area.y, craftbang.colors.background)
+			craftbang.output(area.name, area.x + 1, area.y, craftbang.colors.panelText)
 		end
 	end
 

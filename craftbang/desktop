@@ -16,42 +16,12 @@ local shortcuts = {
 
 local shortcutsPath = '.cb-shortcuts'
 
---[[
-function desktop:genTiles(dir)
-	self:clearIcons()
-
-	local pos = 0
-	if fs.isDir(dir) then
-		local filelist = fs.list(dir)
-		for i=1, #filelist do
-			local filename = filelist[i]
-			local filepath = fs.combine(dir, filename)
-
-			if not filename:sub(1,1) == '.' then
-				local x = math.floor(pos / 2) * (tileWidth + paddingx) + marginx + 1
-				local y = (pos % 2) * (tileHeight + paddingy) + marginy + 1
-				local area = arealib.new(tileWidth, tileHeight, craftbang.colors.tile)
-				area:topLeft(x,y)
-
-				area.basex = area.x
-				area.name = filename
-				area.path = filepath
-
-				table.insert(icons, area)
-
-				pos = pos + 1
-			end
-		end
-	end
-end
-]]
-
 function desktop:clearIcons()
 	icons = {}
 end
 
 function desktop:addIcon(name, x, y, path)
-	local area = arealib.new(tileWidth, tileHeight, craftbang.colors.panel):topLeft(x, y)
+	local area = arealib.new(tileWidth, tileHeight, craftbang.colors.icon):topLeft(x, y)
 
 	area.width = tileWidth
 	area.height = tileHeight
@@ -222,7 +192,7 @@ function desktop:draw()
 	local id = os.computerID()
 	local w,h = term.getSize()
 
-	craftbang.output(time, w - #time, 2, craftbang.colors.panel)
+	craftbang.output(time, w - #time, 2, craftbang.colors.icon)
 	if name then
 		craftbang.output(name..' #'..id, 2, 2)
 	end
@@ -234,7 +204,7 @@ function desktop:draw()
 		craftbang.output(v.name,
 			math.ceil(v.x + v.width/2 - #v.name/2),
 			v:bounds('bottom') + 2,
-			craftbang.colors.tile,
+			craftbang.colors.icon,
 			craftbang.colors.background)
 	end
 end

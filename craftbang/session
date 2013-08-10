@@ -2,12 +2,24 @@ os.loadAPI('craftbang/lib/arealib')
 os.loadAPI('craftbang/lib/redirect')
 
 craftbang = {
-	colors = {
+	colors = term.isColor() and {
 		background = colors.gray;
+
 		panel = colors.lightGray;
-		tile = colors.lightGray;
-		tileText = colors.gray;
-		tileFavorite = colors.lightBlue;
+		panelText = colors.gray;
+
+		icon = colors.lightGray;
+
+		dialog = colors.lightGray;
+		dialogBorder = colors.gray;
+		dialogText = colors.gray;
+		dialogButton = colors.gray;
+		dialogButtonText = colors.lightGray;
+	}
+	or {
+		background = colors.black;
+		panel = colors.white;
+		icon = colors.white;
 	};
 	screen = {};
 	running = true;
