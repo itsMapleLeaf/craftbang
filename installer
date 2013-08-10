@@ -63,6 +63,7 @@ sleep(1)
 
 if not installed then
 	clear()
+
 	local startupContent = [[
 	shell.run("craftbang/session")
 	]]
@@ -71,11 +72,13 @@ if not installed then
 	if fs.exists('startup') then
 		print "\nYour current startup file will be renamed to startup-old."
 	end
-	write "[y/N] "
+	write "[Y/n] "
 
 	local input = read():lower():sub(1,1)
 
-	if input == 'y' then
+	if input == 'n' then
+		print "In that case, run craftbang/session to start CraftBang."
+	else
 		if fs.exists('startup') then
 			if fs.exists('startup-old') then
 				fs.delete('startup-old')
@@ -87,7 +90,5 @@ if not installed then
 		startup.write(startupContent)
 		startup.close()
 		print "CraftBang will now run on startup."
-	else
-		print "In that case, run craftbang/session to start CraftBang."
 	end
 end
