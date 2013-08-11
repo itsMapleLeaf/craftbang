@@ -10,7 +10,7 @@ panel.dragFocus = nil
 function panel:addTask(program, name, silent)
 	if not shell.resolveProgram(program:match("%S+")) then
 		craftbang.dialog:notice(program.." does not exist!")
-		return
+		return false
 	end
 
 	local w,h = term.getSize()
@@ -69,6 +69,8 @@ function panel:addTask(program, name, silent)
 	end
 
 	task:resume()
+
+	return true
 end
 
 function panel:killTask(task)
