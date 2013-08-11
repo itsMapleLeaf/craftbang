@@ -4,6 +4,8 @@ local craftbang = {
 
 		panel = colors.lightGray;
 		panelText = colors.gray;
+		activePanel = colors.gray;
+		activePanelText = colors.lightGray;
 
 		icon = colors.lightGray;
 
@@ -18,6 +20,8 @@ local craftbang = {
 
 		panel = colors.white;
 		panelText = colors.black;
+		activePanel = colors.black;
+		activePanelText = colors.white;
 
 		icon = colors.white;
 

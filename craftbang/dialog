@@ -156,7 +156,7 @@ function dialog:menu(x, y, options, callback)
 			local area = areas[i]
 			area:fill()
 
-			term.setTextColor(craftbang.colors.panelText)
+			term.setTextColor(craftbang.colors.dialogText)
 			if selection == i then
 				craftbang.output('>' .. area.name, area.x, area.y)
 			else

@@ -238,8 +238,8 @@ function panel:draw()
 	for i=#self.tasks, 1, -1 do
 		local v = self.tasks[i]
 		if self.activeTask == v then
-			v.color = craftbang.colors.panelText
-			term.setTextColor(craftbang.colors.panel)
+			v.color = craftbang.colors.activePanel
+			term.setTextColor(craftbang.colors.activePanelText)
 		else
 			v.color = craftbang.colors.panel
 			term.setTextColor(craftbang.colors.panelText)
