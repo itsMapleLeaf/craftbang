@@ -76,6 +76,8 @@ local function main()
 
 	craftbang.screen.width, craftbang.screen.height = term.getSize()
 
+	craftbang.config = {}
+
 	local thisenv = getfenv()
 	local env = setmetatable(
 		{ craftbang = craftbang },

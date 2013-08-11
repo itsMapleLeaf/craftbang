@@ -138,12 +138,13 @@ function dialog:menu(x, y, options, callback)
 				elseif key == 'enter' then
 					self:close()
 					callback(selection)
-				elseif key == 'leftCtrl' or key == 'backspace' then
-					self:close()
 				end
 			else
 				selection = key == 'down' and 1
 				or key == 'up' and #areas
+			end
+			if key == 'leftCtrl' or key == 'backspace' then
+				self:close()
 			end
 		end
 	end

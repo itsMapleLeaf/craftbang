@@ -170,8 +170,6 @@ function desktop:dragged(button, x, y)
 		local icon = dragFocus.icon
 		icon.shortcut.x = x - dragFocus.x
 		icon.shortcut.y = y - dragFocus.y
-		icon.x = icon.shortcut.x
-		icon.y = icon.shortcut.y
 	end
 end
 
@@ -239,10 +237,6 @@ function desktop:key(key)
 			editShortcutDialog(self, selected.x, selected.y, selected)
 		end
 	end
-	if selected then
-		selected.shortcut.x = selected.x
-		selected.shortcut.y = selected.y
-	end
 end
 
 function desktop:scrolled(dir)
@@ -274,6 +268,9 @@ function desktop:draw()
 		elseif bottom > h then
 			v:bottom(h)
 		end
+
+		v.shortcut.x = v.x
+		v.shortcut.y = v.y
 
 		local text = v.name
 		if v == selected then
