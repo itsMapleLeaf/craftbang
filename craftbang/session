@@ -76,7 +76,31 @@ local function main()
 
 	craftbang.screen.width, craftbang.screen.height = term.getSize()
 
-	craftbang.config = {}
+	local colorsPath = '.cb-colors'
+	if fs.exists(colorsPath) then
+		local content = craftbang.readFile(colorsPath)
+		local line = 1
+		for key, value in content:gmatch("(%w+)%s+(%w+)") do
+			if colors[value]
+			and craftbang.colors[key]
+			and (term.isColor() or not (colors[value] ~= 1 or colors[value] ~= 32768)) then
+				craftbang.colors[key] = colors[value]
+				line = line + 1
+			end
+		end
+	end
+
+	local file = fs.open(colorsPath, 'w')
+	for k,v in pairs(craftbang.colors) do
+		local name
+		for cname, cvalue in pairs(colors) do
+			if cvalue == v then
+				name = cname
+			end
+		end
+		file.writeLine(k..string.rep(' ', 20 - #k)..name)
+	end
+	file.close()
 
 	local thisenv = getfenv()
 	local env = setmetatable(

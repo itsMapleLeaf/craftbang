@@ -112,6 +112,7 @@ local function desktopDialog(self, x, y)
 		"New Shortcut..";
 		"";
 		"Set Name..";
+		"Edit Colors..";
 		"";
 		"Restart";
 		"Shutdown";
@@ -135,10 +136,13 @@ local function desktopDialog(self, x, y)
 			end)
 
 		elseif choice == 4 then
-			os.reboot()
+			craftbang.panel:addTask("edit .cb-colors")
+
 		elseif choice == 5 then
-			os.shutdown()
+			os.reboot()
 		elseif choice == 6 then
+			os.shutdown()
+		elseif choice == 7 then
 			craftbang.running = false
 		end
 	end)
