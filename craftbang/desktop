@@ -129,7 +129,10 @@ local function desktopDialog(self, x, y)
 			newShortcutDialog(self, x, y)
 
 		elseif choice == 3 then
-			-- open settings application
+			craftbang.dialog:textInput('Rename this Computer: ', 20, os.getComputerLabel(),
+			function(name)
+				os.setComputerLabel(name)
+			end)
 
 		elseif choice == 4 then
 			os.reboot()
