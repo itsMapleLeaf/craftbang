@@ -248,7 +248,7 @@ function desktop:scrolled(dir)
 end
 
 function desktop:draw()
-	local time = textutils.formatTime(os.time())
+	local time = textutils.formatTime(os.time(), true)
 	local name = os.getComputerLabel()
 	local id = os.computerID()
 	local w,h = term.getSize()
