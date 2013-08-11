@@ -234,10 +234,10 @@ function desktop:key(key)
 		selected.y = selected.y - 1
 	elseif key == 's' then
 		selected.y = selected.y + 1
-	elseif key == 'leftCtrl' then
+	elseif key == 'leftCtrl' or key == 'rightCtrl' then
 		local w, h = term.getSize()
 		desktopDialog(self, 1, h - 1)
-	elseif key == 'leftShift' then
+	elseif key == 'leftShift' or key == 'rightShift' then
 		if selected then
 			editShortcutDialog(self, selected.x, selected.y, selected)
 		end

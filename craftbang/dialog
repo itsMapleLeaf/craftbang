@@ -39,7 +39,7 @@ function dialog:textInput(title, limit, default, callback)
 			elseif p1 == keys.enter then
 				self:close()
 				callback(input)
-			elseif p1 == keys.leftCtrl then
+			elseif p1 == keys.leftCtrl or p1 == keys.rightCtrl then
 				self:close()
 			end
 		elseif ev == 'mouse_click' then
@@ -143,7 +143,7 @@ function dialog:menu(x, y, options, callback)
 				selection = key == 'down' and 1
 				or key == 'up' and #areas
 			end
-			if key == 'leftCtrl' or key == 'backspace' then
+			if key == 'leftCtrl' or key == 'rightCtrl' then
 				self:close()
 			end
 		end
