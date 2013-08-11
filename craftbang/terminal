@@ -5,6 +5,8 @@ if not craftbang then
 end
 ]]
 
+local history = {}
+
 local function setColors()
 	if term.isColor() then
 		term.setBackgroundColor(colors.gray)
@@ -15,11 +17,23 @@ local function setColors()
 	end
 end
 
-local history = {}
-
 setColors()
 term.clear()
 term.setCursorPos(1,1)
+
+print [[
+
+     ##   ##     ##
+     ##   ##     ##
+  #############  ##
+  #############  ##
+     ##   ##     ##
+     ##   ##     ##
+  #############  ##
+  #############    
+     ##   ##     ##
+     ##   ##     ##
+]]
 
 while true do
 	setColors()
@@ -30,7 +44,7 @@ while true do
 
 	term.setTextColor(colors.white)
 	local input = read(nil, history):match('%s*(.+)%s*')
-	
+
 	if input == 'exit' then
 		break
 	else
