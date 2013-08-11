@@ -2,6 +2,7 @@
 
 CraftBang is a multitasking desktop environment for ComputerCraft's CraftOS, a program aiming for productivity and convenience. The name and color scheme are both based off of the wonderful CrunchBang linux, and CraftBang is compatible with both advanced and normal computers.
 
+
 ## Installation
 
 Simply download the "updater" file from this page, or from pastebin:
@@ -9,6 +10,7 @@ Simply download the "updater" file from this page, or from pastebin:
     pastebin get reBqWcFr updater
 
 and run it on your computer. It will download the installer, which will download craftbang files and prompt you for running on startup. You need to have HTTP enabled.
+
 
 ## The Panel
 
@@ -56,3 +58,7 @@ X - close the current task.
 
 Ctrl - close an open menu.  
 Ctrl - close a text dialog.
+
+
+## Autorun
+Any files placed in the /autorun directory will be run by craftbang automatically, each as its own task.
