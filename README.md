@@ -53,5 +53,5 @@ X - close the current task.
 
 ### Misc
 
-Ctrl - close an open menu.
+Ctrl - close an open menu.  
 Ctrl - close a text dialog.
