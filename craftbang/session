@@ -83,7 +83,7 @@ local function main()
 		for key, value in content:gmatch("(%w+)%s+(%w+)") do
 			if colors[value]
 			and craftbang.colors[key]
-			and (term.isColor() or not (colors[value] ~= 1 or colors[value] ~= 32768)) then
+			and (term.isColor() or not (colors[value] == 1 or colors[value] == 32768)) then
 				craftbang.colors[key] = colors[value]
 				line = line + 1
 			end
