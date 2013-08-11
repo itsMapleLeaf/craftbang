@@ -163,7 +163,7 @@ local function main()
 			end
 		end
 
-		if ev[1] == 'key' then
+		if (ev[1] == 'key' or ev[1] == 'char') then
 			if ev[2] == keys.leftAlt or ev[2] == keys.rightAlt then
 				if os.clock() - altClock < altPeriod then
 					craftbang.panel:events(unpack(ev))
@@ -172,7 +172,7 @@ local function main()
 			end
 		end
 
-		if ev[1] == 'key' and os.clock() - altClock < altPeriod then
+		if (ev[1] == 'key' or ev[1] == 'char') and os.clock() - altClock < altPeriod then
 			craftbang.panel:altKey(ev[2])
 			altClock = os.clock()
 
