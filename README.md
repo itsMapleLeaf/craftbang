@@ -50,3 +50,8 @@ While under alt mode:
 Up or Down arrow key - toggle a task.  
 Left and Right - switch between tasks.  
 X - close the current task.
+
+### Misc
+
+Ctrl - close an open menu.
+Ctrl - close a text dialog.
