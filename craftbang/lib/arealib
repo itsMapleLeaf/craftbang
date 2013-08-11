@@ -1,6 +1,9 @@
 version = 1.0
 
-local instances = {}
+local states = {
+	default = {}
+}
+local curState = states.default
 local target = term
 
 local area = {
@@ -178,8 +181,8 @@ function area:fill()
 end
 
 function area:goToFront()
-	for i=1, #instances do
-		local v = instances[i]
+	for i=1, #curState do
+		local v = curState[i]
 		if v == self then
 			--[[
 			for i=1, #self.attached do
@@ -187,7 +190,7 @@ function area:goToFront()
 				v:goToFront()
 			end
 			]]
-			table.insert(instances, 1, table.remove(instances, i))
+			table.insert(curState, 1, table.remove(curState, i))
 			break
 		end
 	end
@@ -212,34 +215,34 @@ end
 
 -- api functions
 function new(width, height, color, global)
-	local instance = {}
+	local obj = {}
 
 	for k,v in pairs(area) do
-		instance[k] = v
+		obj[k] = v
 	end
 
-	instance.width = width
-	instance.height = height
-	instance.color = color
-	instance.global = global
+	obj.width = width
+	obj.height = height
+	obj.color = color
+	obj.global = global
 
-	return instance:init()
+	return obj:init()
 end
 
 function add(area)
-	for i=1, #instances do
-		if instances[i] == area then
+	for i=1, #curState do
+		if curState[i] == area then
 			return false
 		end
 	end
-	table.insert(instances, 1, area)
+	table.insert(curState, 1, area)
 	return true
 end
 
 function remove(area)
-	for i=1, #instances do
-		if instances[i] == area then
-			table.remove(instances, i)
+	for i=1, #curState do
+		if curState[i] == area then
+			table.remove(curState, i)
 			return true
 		end
 	end
@@ -247,16 +250,16 @@ function remove(area)
 end
 
 function draw()
-	for i=#instances, 1, -1 do
-		local v = instances[i]
+	for i=#curState, 1, -1 do
+		local v = curState[i]
 		v:fill()
 		v:draw()
 	end
 end
 
 local function eventCall(fname, p1, x, y, global)
-	for i=1, #instances do
-		local v = instances[i]
+	for i=1, #curState do
+		local v = curState[i]
 		if global == true or v.global == true or v:contains(x, y) then
 			v[fname](v, p1, x, y, x - v.x, y - v.y)
 			if not (global or v.global) then
@@ -282,4 +285,11 @@ function setTarget(newTarget)
 	assert(newTarget, "arealib.setTarget: No target given")
 	target = newTarget
 	return target
+end
+
+function setState(name)
+	if not states[name] then
+		states[name] = {}
+	end
+	curState = states[name]
 end
