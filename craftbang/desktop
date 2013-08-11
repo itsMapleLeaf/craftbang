@@ -220,7 +220,9 @@ function desktop:key(key)
 			end
 		end
 	elseif key == 'enter' then
-		craftbang.panel:addTask(selected.path, selected.name)
+		if selected then
+			craftbang.panel:addTask(selected.path, selected.name)
+		end
 	elseif key == 'a' then
 		selected.x = selected.x - 1
 	elseif key == 'd' then

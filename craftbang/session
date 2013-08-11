@@ -1,7 +1,4 @@
-os.loadAPI('craftbang/lib/arealib')
-os.loadAPI('craftbang/lib/redirect')
-
-craftbang = {
+local craftbang = {
 	colors = term.isColor() and {
 		background = colors.gray;
 
@@ -67,15 +64,37 @@ function craftbang.writeFile(path, content, append)
 	return nil
 end
 
-craftbang.panel = dofile('/craftbang/panel')
-craftbang.desktop = dofile('/craftbang/desktop')
-craftbang.dialog = dofile('/craftbang/dialog')
-
-arealib.add(craftbang.desktop)
-arealib.add(craftbang.panel)
+local function components()
+	craftbang.panel = dofile('/craftbang/panel')
+	craftbang.desktop = dofile('/craftbang/desktop')
+	craftbang.dialog = dofile('/craftbang/dialog')
+end
 
 local function main()
+	os.loadAPI('craftbang/lib/arealib')
+	os.loadAPI('craftbang/lib/redirect')
+
 	craftbang.screen.width, craftbang.screen.height = term.getSize()
+
+	local thisenv = getfenv()
+	local env = setmetatable(
+		{ craftbang = craftbang },
+		{
+			__index = function(self, key)
+				if rawget(self, key) == nil then
+					rawset(self, key, thisenv[key])
+				end
+				return rawget(self, key)
+			end;
+		})
+
+	setfenv(components, env)()
+	
+	arealib.add(craftbang.desktop)
+	arealib.add(craftbang.panel)
+
+	craftbang.desktop:loadShortcuts()
+	craftbang.desktop:genShortcutIcons()
 
 	local redraw = true
 	local function draw()
@@ -84,12 +103,23 @@ local function main()
 			term.setCursorBlink(false)
 			arealib.draw()
 			craftbang.dialog:draw()
+
+			if craftbang.panel.activeTask then
+				local buffer = craftbang.panel.activeTask.buffer
+				term.setCursorBlink(buffer.cursorBlink)
+				if buffer.cursorBlink then
+					term.setTextColor(buffer.textColor)
+					term.setCursorPos(buffer.curX, buffer.curY)
+				end
+			end
+
+			if craftbang.dialog.active
+			and craftbang.dialog.type == "textInput" then
+				craftbang.dialog:positionCursor()
+			end
 		end
 		redraw = true
 	end
-
-	craftbang.desktop:loadShortcuts()
-	craftbang.desktop:genShortcutIcons()
 
 	draw()
 
@@ -148,15 +178,14 @@ local function main()
 			altTimer = os.startTimer(altPeriod)
 		else
 			craftbang.panel:events(unpack(ev))
-			if craftbang.dialog.active then
-				craftbang.dialog:events(unpack(ev))
-			end
 			if not craftbang.panel.activeTask then
 				if ev[1] == 'terminate' then
 					break
 				end
 
-				if not craftbang.dialog.active then
+				if craftbang.dialog.active then
+					craftbang.dialog:events(unpack(ev))
+				else
 					if ev[1] == 'mouse_click' then
 						arealib.clicked(ev[2], ev[3], ev[4])
 					elseif ev[1] == 'mouse_drag' then
@@ -169,6 +198,7 @@ local function main()
 					end
 				end
 			else
+				craftbang.dialog:events(unpack(ev))
 				local panel = craftbang.panel
 				if ev[1] == 'mouse_click' then
 					if panel:contains(ev[3], ev[4]) then

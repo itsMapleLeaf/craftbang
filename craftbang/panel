@@ -229,14 +229,10 @@ function panel:draw()
 			text = text:sub(1, v.width - 4) .. '..'
 		end
 		craftbang.output(text, v.x + v.width/2 - #text/2, v.y)
-	end
 
-	if self.activeTask then
-		local buffer = self.activeTask.buffer
-		buffer.blit()
-		term.setTextColor(buffer.textColor)
-		term.setCursorPos(buffer.getCursorPos())
-		term.setCursorBlink(buffer.cursorBlink)
+		if self.activeTask == v then
+			v.buffer.blit()
+		end
 	end
 end
 
