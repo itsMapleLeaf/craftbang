@@ -179,6 +179,8 @@ function panel:altKey(key)
 	local next = keys.right
 	local toggle = key == keys.down and keys.down or keys.up
 	local close = keys.x
+	local moveLeft = keys.a
+	local moveRight = keys.d
 
 	local tasks = self.tasks
 	if key == prev or key == next then
@@ -210,6 +212,24 @@ function panel:altKey(key)
 	elseif key == close then
 		if self.activeTask then
 			self:killTask(self.activeTask)
+		end
+	elseif key == moveLeft or key == moveRight then
+		if self.activeTask then
+			local activeIndex
+			for i=1, #tasks do
+				if tasks[i] == self.activeTask then
+					activeIndex = i
+					break
+				end
+			end
+			if key == moveLeft and activeIndex > 1 then
+				table.insert(tasks, activeIndex - 1, 
+					table.remove(tasks, activeIndex))
+			elseif key == moveRight and activeIndex < #tasks then
+				table.insert(tasks, activeIndex + 1,
+					table.remove(tasks, activeIndex))
+			end
+			self:resizeTasks()
 		end
 	end
 end

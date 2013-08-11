@@ -49,6 +49,7 @@ While under alt mode:
 
 Up or Down arrow key - toggle a task.  
 Left and Right - switch between tasks.  
+A and D - move the selected task.  
 X - close the current task.
 
 ### Misc
