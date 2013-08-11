@@ -126,7 +126,7 @@ local function main()
 	draw()
 
 	if not os.getComputerLabel() then
-		craftbang.dialog:textInput('Give this computer a name?', 20,
+		craftbang.dialog:textInput('Give this computer a name?', 20, nil,
 		function (newName)
 			os.setComputerLabel(newName)
 		end)

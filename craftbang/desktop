@@ -12,6 +12,8 @@ local dragFocus
 
 local selected
 
+local lastRun
+
 local shortcuts = {
 	{ name = "Terminal", x = 42, y = 12, path = "craftbang/terminal" }
 }
@@ -68,24 +70,22 @@ function desktop:removeShortcut(icon)
 end
 
 local function newShortcutDialog(self, x, y)
-	craftbang.dialog:textInput('Program?', nil, function(path)
-	craftbang.dialog:textInput('Shortcut name?', 15, function(name)
+	craftbang.dialog:textInput('Program?', nil, nil,
+	function(path)
 		local program = shell.resolveProgram(path)
-		if fs.exists(program) and not fs.isDir(program) then
+		if program then
 			table.insert(shortcuts, {
-				name = name,
+				name = fs.getName(program),
 				x = x, y = y,
 				path = program
 			})
 			self:genShortcutIcons()
+		elseif fs.isDir(path) then
+			craftbang.dialog:notice(path.." is a directory.")
 		else
-			if fs.isDir(path) then
-				craftbang.dialog:notice(path.." is a directory.")
-			elseif not fs.exists(path) then
-				craftbang.dialog:notice(path.." does not exist!")
-			end
+			craftbang.dialog:notice(path.." does not exist!")
 		end
-	end) end)
+	end)
 end
 
 local function editShortcutDialog(self, x, y, tile)
@@ -93,7 +93,7 @@ local function editShortcutDialog(self, x, y, tile)
 		craftbang.dialog:menu(x, y, {"Rename..", "Remove"},
 		function (choice)
 			if choice == 1 then
-				craftbang.dialog:textInput('New name?', 15,
+				craftbang.dialog:textInput('New name?', 15, tile.name,
 				function (name)
 					tile.shortcut.name = name
 					self:genShortcutIcons()
@@ -111,7 +111,7 @@ local function desktopDialog(self, x, y)
 		"Run..";
 		"New Shortcut..";
 		"";
-		"Settings";
+		"Set Name..";
 		"";
 		"Restart";
 		"Shutdown";
@@ -119,9 +119,11 @@ local function desktopDialog(self, x, y)
 	},
 	function(choice)
 		if choice == 1 then
-			craftbang.dialog:textInput('Run...', nil,
+			craftbang.dialog:textInput('Run...', nil, lastRun,
 			function (input)
-				craftbang.panel:addTask(input)
+				if craftbang.panel:addTask(input) then
+					lastRun = input
+				end
 			end)
 		elseif choice == 2 then
 			newShortcutDialog(self, x, y)

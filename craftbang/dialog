@@ -17,13 +17,13 @@ function dialog:close()
 	self.type = nil
 end
 
-function dialog:textInput(title, limit, callback)
+function dialog:textInput(title, limit, default, callback)
 	limit = limit or math.huge
 
 	self.height = 6
 	self:sizeLeft(5):sizeRight(5, true):center()
 
-	local input = ''
+	local input = default or ''
 
 	local cancelText = " Cancel "
 	local cancel = arealib.new(#cancelText, 1, craftbang.colors.dialogButton)
