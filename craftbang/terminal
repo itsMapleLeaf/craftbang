@@ -30,6 +30,7 @@ while true do
 
 	term.setTextColor(colors.white)
 	local input = read(nil, history):match('%s*(.+)%s*')
+	
 	if input == 'exit' then
 		break
 	else

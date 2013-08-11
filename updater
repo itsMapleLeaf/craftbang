@@ -23,7 +23,7 @@ if download then
 		disk.eject(v)
 	end
 
-	write "Restart now? [Y/n]"
+	write "Restart now? [Y/n] "
 	local input = read():lower():sub(1,1)
 	if input == 'n' then
 		print "I'll let you return to your shell then."
