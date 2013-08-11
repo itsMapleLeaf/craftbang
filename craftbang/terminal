@@ -15,6 +15,8 @@ local function setColors()
 	end
 end
 
+local history = {}
+
 setColors()
 term.clear()
 term.setCursorPos(1,1)
@@ -27,7 +29,7 @@ while true do
 	write(line)
 
 	term.setTextColor(colors.white)
-	local input = read():match('%s*(.+)%s*')
+	local input = read(nil, history):match('%s*(.+)%s*')
 	if input == 'exit' then
 		break
 	else
@@ -45,6 +47,7 @@ while true do
 			else
 				print(args[1] .. " does not exist.")
 			end
+			history[#history + 1] = input
 		end
 	end
 end
