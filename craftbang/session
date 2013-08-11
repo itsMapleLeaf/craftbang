@@ -85,11 +85,11 @@ local function main()
 		local content = craftbang.readFile(colorsPath)
 		local line = 1
 		for key, value in content:gmatch("(%w+)%s+(%w+)") do
-			if colors[value]
-			and craftbang.colors[key]
-			and (term.isColor() or not (colors[value] == 1 or colors[value] == 32768)) then
-				craftbang.colors[key] = colors[value]
-				line = line + 1
+			if colors[value] and craftbang.colors[key] then
+				if term.isColor() or (colors[value] == 1 or colors[value] == 32768) then
+					craftbang.colors[key] = colors[value]
+					line = line + 1
+				end
 			end
 		end
 	end
