@@ -62,8 +62,6 @@ Ctrl - close an open menu.
 Ctrl - close a text dialog.
 
 
-## Autorun
-
 ## Colors Reference
 background: The desktop background color.
 
