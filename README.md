@@ -4,6 +4,8 @@ CraftBang is a multitasking desktop environment for ComputerCraft's CraftOS, a p
 
 Any files placed in the /autorun directory will be run by craftbang automatically, each as its own task.
 
+Want to contribute? Fork this project and make a pull request with whatever bit of code you'd like to be a part of CraftBang. All credits will be given where needed.
+
 
 ## Installation
 
