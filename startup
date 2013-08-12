@@ -1,5 +1,1 @@
-if shell.getRunningProgram() == "craftbang/session" then
-	print "CraftBang session is already running."
-	return
-end
 shell.run("craftbang/session")
