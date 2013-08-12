@@ -179,6 +179,8 @@ function desktop:dragged(button, x, y)
 		local icon = dragFocus.icon
 		icon.shortcut.x = x - dragFocus.x
 		icon.shortcut.y = y - dragFocus.y
+		icon.x = icon.shortcut.x
+		icon.y = icon.shortcut.y
 	end
 end
 

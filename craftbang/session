@@ -34,7 +34,7 @@ local craftbang = {
 	screen = {};
 	running = true;
 
-	version = 50;
+	version = 51;
 }
 
 function craftbang.background(color)
