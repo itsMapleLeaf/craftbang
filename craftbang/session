@@ -76,9 +76,16 @@ local function components()
 	craftbang.dialog = dofile('/craftbang/dialog')
 end
 
+local function safeLoadAPI(path)
+	local success = os.loadAPI('craftbang/lib/arealib')
+	if not success then
+		error("Could not load api from " .. path)
+	end
+end
+
 local function main()
-	os.loadAPI('craftbang/lib/arealib')
-	os.loadAPI('craftbang/lib/redirect')
+	safeLoadAPI('craftbang/lib/arealib')
+	safeLoadAPI('craftbang/lib/redirect')
 
 	craftbang.screen.width, craftbang.screen.height = term.getSize()
 
