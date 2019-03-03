@@ -1,4 +1,4 @@
-local url = "https://raw.github.com/Kingdaro/CraftBang/master/craftbang/"
+local url = "https://raw.github.com/kingdaro/craftbang/master/craftbang/"
 local files = {}
 local filelist = {
 	'desktop';
