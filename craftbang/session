@@ -255,19 +255,12 @@ local function main()
 	end
 end
 
---goroutine2.run(main)
 local ok, err = pcall(main)
 
-craftbang.background(colors.black)
-if not ok then
+if ok then
+	craftbang.background(colors.black)
+else
 	term.setTextColor(colors.white)
 	print "Whoops! CraftBang seems to have crashed..."
 	printError(err)
-	print "Press any key to restart."
-	repeat
-		local event = os.pullEvent()
-	until event == 'key' or event == 'mouse_click'
-	os.reboot()
 end
-
---os.shutdown()
