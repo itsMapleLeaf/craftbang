@@ -1,6 +1,6 @@
 ## Update
 
-Later versions of CC implemented a few changes CB relied on that now breaks the program when trying to run it. I've gotten it _mostly_ working, but a cryptic-looking error with bios.lua and the old `redirect` lib used here makes it more than worth the effort to fix for a simple nostalgia trip. I'm archiving this as irrepable. You're welcome to play around with it yourself if you like.
+Later versions of CC implemented a few changes CB relied on that now breaks the program when trying to run it. I've gotten it _mostly_ working, but a cryptic-looking error with bios.lua and the old `redirect` lib used here makes it more than worth the effort to fix for a simple nostalgia trip. I'm archiving this as irreparable. You're welcome to play around with it yourself if you like.
 
 ---
 
