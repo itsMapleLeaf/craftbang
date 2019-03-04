@@ -296,4 +296,6 @@ function desktop:draw()
 	end
 end
 
-return desktop
+function getInstance()
+	return desktop
+end

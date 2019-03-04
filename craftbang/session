@@ -1,4 +1,4 @@
-local craftbang = {
+_G.craftbang = {
 	colors = term.isColor() and {
 		background = colors.gray;
 
@@ -70,14 +70,8 @@ function craftbang.writeFile(path, content, append)
 	return nil
 end
 
-local function components()
-	craftbang.panel = dofile('/craftbang/panel')
-	craftbang.desktop = dofile('/craftbang/desktop')
-	craftbang.dialog = dofile('/craftbang/dialog')
-end
-
 local function safeLoadAPI(path)
-	local success = os.loadAPI('craftbang/lib/arealib')
+	local success = os.loadAPI(path)
 	if not success then
 		error("Could not load api from " .. path)
 	end
@@ -88,6 +82,16 @@ local function main()
 	safeLoadAPI('craftbang/lib/redirect')
 
 	craftbang.screen.width, craftbang.screen.height = term.getSize()
+
+	_G.shell = shell
+
+	safeLoadAPI('craftbang/panel')
+	safeLoadAPI('craftbang/desktop')
+	safeLoadAPI('craftbang/dialog')
+
+	craftbang.panel = panel.getInstance()
+	craftbang.desktop = desktop.getInstance()
+	craftbang.dialog = dialog.getInstance()
 
 	local colorsPath = '.cb-colors'
 	if fs.exists(colorsPath) then
@@ -115,20 +119,6 @@ local function main()
 	end
 	file.close()
 
-	local thisenv = getfenv()
-	local env = setmetatable(
-		{ craftbang = craftbang },
-		{
-			__index = function(self, key)
-				if rawget(self, key) == nil then
-					rawset(self, key, thisenv[key])
-				end
-				return rawget(self, key)
-			end;
-		})
-
-	setfenv(components, env)()
-	
 	arealib.add(craftbang.desktop)
 	arealib.add(craftbang.panel)
 

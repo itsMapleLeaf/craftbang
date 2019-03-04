@@ -204,4 +204,7 @@ function dialog:notice(...)
 end
 
 dialog:close()
-return dialog
+
+function getInstance()
+	return dialog
+end

@@ -258,4 +258,6 @@ function panel:draw()
 	end
 end
 
-return panel
+function getInstance()
+	return panel
+end
