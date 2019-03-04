@@ -1,3 +1,9 @@
+## Update
+
+Later versions of CC implemented a few changes CB relied on that now breaks the program when trying to run it. I've gotten it _mostly_ working, but a cryptic-looking error with bios.lua and the old `redirect` lib used here makes it more than worth the effort to fix for a simple nostalgia trip. I'm archiving this as irrepable. You're welcome to play around with it yourself if you like.
+
+---
+
 # Welcome to CraftBang!
 
 CraftBang is a multitasking desktop environment for ComputerCraft's CraftOS, a program aiming for productivity and convenience. The name and color scheme are both based off of the wonderful CrunchBang linux, and CraftBang is compatible with both advanced and normal computers.
